@@ -1,4 +1,4 @@
-import { $, component$ } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 import type { Session } from "@auth/qwik";
 import type { Signal } from "@builder.io/qwik";
 import { useSignOut } from "~/routes/plugin@auth";
@@ -14,7 +14,11 @@ interface NavbarProps {
 export default component$<NavbarProps>(({ session, servers }) => {
   const signOutSig = useSignOut();
   const nav = useNavigate();
+  const selectedServer = useSignal<string>("");
+
   const handleServerSelect = $(async (event: Event, currentTarget: any) => {
+    selectedServer.value = currentTarget.value;
+
     if (
       servers.value.installedGuilds.some(
         (guild) => guild.id === currentTarget.value,
@@ -38,8 +42,9 @@ export default component$<NavbarProps>(({ session, servers }) => {
         <select
           class="select select-bordered w-full max-w-xs"
           onChange$={handleServerSelect}
+          value={selectedServer.value}
         >
-          <option disabled selected>
+          <option disabled selected value="">
             Select Server
           </option>
           {servers.value.installedGuilds.map((server) => (
@@ -73,7 +78,7 @@ export default component$<NavbarProps>(({ session, servers }) => {
           </div>
           <ul
             tabIndex={0}
-            class="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
+            class="menu dropdown-content menu-sm rounded-box bg-base-100 z-[1] mt-3 w-52 p-2 shadow"
           >
             <li>
               <Form action={signOutSig}>
