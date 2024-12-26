@@ -1,5 +1,9 @@
 import { component$ } from "@builder.io/qwik";
 
 export default component$(() => {
-  return <div>Processing login...</div>;
+  return (
+    <>
+      <h1>Server:</h1>
+    </>
+  );
 });
