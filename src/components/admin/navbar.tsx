@@ -2,7 +2,7 @@ import { $, component$, useSignal } from "@builder.io/qwik";
 import type { Session } from "@auth/qwik";
 import type { Signal } from "@builder.io/qwik";
 import { useSignOut } from "~/routes/plugin@auth";
-import { Form, useNavigate } from "@builder.io/qwik-city";
+import { Form, useLocation, useNavigate } from "@builder.io/qwik-city";
 
 interface NavbarProps {
   session: Readonly<Signal<null>> | Readonly<Signal<Session>>;
@@ -14,7 +14,9 @@ interface NavbarProps {
 export default component$<NavbarProps>(({ session, servers }) => {
   const signOutSig = useSignOut();
   const nav = useNavigate();
-  const selectedServer = useSignal<string>("");
+  const loc = useLocation();
+  const guildIdFromUrl = loc.url.pathname.match(/\/admin\/(\d+)\/$/)?.[1];
+  const selectedServer = useSignal<string>(guildIdFromUrl || "");
 
   const handleServerSelect = $(async (event: Event, currentTarget: any) => {
     selectedServer.value = currentTarget.value;
@@ -44,7 +46,7 @@ export default component$<NavbarProps>(({ session, servers }) => {
           onChange$={handleServerSelect}
           value={selectedServer.value}
         >
-          <option disabled selected value="">
+          <option disabled selected={selectedServer.value === ""} value="">
             Select Server
           </option>
           {servers.value.installedGuilds.map((server) => (
@@ -78,7 +80,7 @@ export default component$<NavbarProps>(({ session, servers }) => {
           </div>
           <ul
             tabIndex={0}
-            class="menu dropdown-content menu-sm rounded-box bg-base-100 z-[1] mt-3 w-52 p-2 shadow"
+            class="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
           >
             <li>
               <Form action={signOutSig}>

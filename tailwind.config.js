@@ -8,6 +8,8 @@ export default {
   },
   plugins: [daisyui],
   daisyui: {
-    themes: ["forest"],
+    darkTheme: "dracula",
+    themes: ["emerald", "dracula"],
   },
+  darkMode: ["media", "[data-theme='dracula']"],
 };
