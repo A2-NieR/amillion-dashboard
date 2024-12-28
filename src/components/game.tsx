@@ -9,7 +9,7 @@ interface GameProps {
   nameShort: string;
   id: string;
   imageUrl: string;
-  channels: Array<{ id: string; name: string }>;
+  channels: Array<{ id: string; name: string }> | undefined;
   selectedChannel: string;
 }
 
@@ -64,7 +64,7 @@ export default component$<GameProps>(
               onChange$={handleChannelSelect}
             >
               <option value="">Select a channel</option>
-              {channels.map((channel) => (
+              {channels?.map((channel) => (
                 <option key={channel.id} value={channel.id}>
                   {"#" + channel.name}
                 </option>
