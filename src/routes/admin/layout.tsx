@@ -25,7 +25,9 @@ export const useGuildData = routeLoader$(async (requestEvent) => {
       (guild: { permissions: number }) => (guild.permissions & 0x8) === 0x8,
     );
 
-    const botGuilds = await fetchBotGuilds(requestEvent.env.get("BOT_TOKEN"));
+    const botGuilds = await fetchBotGuilds(
+      requestEvent.env.get("PRIVATE_BOT_TOKEN"),
+    );
 
     const installedGuilds = adminGuilds.filter((guild) =>
       botGuilds.some((botGuild) => botGuild.id === guild.id),
