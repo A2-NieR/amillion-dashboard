@@ -16,13 +16,13 @@ type GameChannelSelection = {
   channelId: string;
 };
 
+export { useGamesData } from "~/shared/loaders";
+
 export const gamesSelectionCTX =
   createContextId<Signal<string[]>>("available-games");
 export const gameChannelSelectionCTX = createContextId<
   Signal<GameChannelSelection[]>
 >("game-channel-selection");
-
-export { useGamesData } from "~/shared/loaders";
 
 export const useChannels = routeLoader$(async (requestEvent) => {
   const guildIdFromUrl = requestEvent.pathname.match(/\/admin\/(\d+)\/$/)?.[1];
@@ -33,7 +33,7 @@ export const useChannels = routeLoader$(async (requestEvent) => {
 
   try {
     const channels = await fetchGuildTextChannels(
-      requestEvent.env.get("BOT_TOKEN"),
+      requestEvent.env.get("PRIVATE_BOT_TOKEN"),
       guildIdFromUrl,
     );
 
@@ -80,19 +80,17 @@ export default component$(() => {
 
   return (
     <>
-      <div class="mx-auto mt-8 flex w-2/3 flex-col items-center gap-4">
+      <div class="mx-auto mt-8 flex w-full flex-col items-center gap-4 md:w-2/3">
         <div class="flex flex-wrap justify-center gap-4">
-          {gameData.value.records?.map((game) => (
+          {gameData.value.games?.map((game) => (
             <Game
-              key={game.id}
-              name={game.name}
-              nameShort={game.nameShort}
-              id={game.id}
-              imageUrl={game.imageUrl}
+              key={game.game_id}
+              name={game.game_name}
+              id={game.game_id}
               channels={channelData.value.channels}
               selectedChannel={
                 gameChannelSelection.value.find(
-                  (selection) => selection.gameId === game.id,
+                  (selection) => selection.gameId === game.game_id,
                 )?.channelId || ""
               }
             />
